@@ -7,7 +7,7 @@ import {
   Volume2, 
   X
 } from "lucide-react";
-import { mockStories } from "../data/mockFamily";
+import { API_URL } from "../config";
 
 function Stories() {
   const [stories, setStories] = useState([]);
@@ -17,8 +17,23 @@ function Stories() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
   useEffect(() => {
-    setStories(mockStories);
+    const fetchStories = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/stories`);
+        if (res.ok) {
+          const data = await res.json();
+          setStories(data);
+        } else {
+          setStories(mockStories);
+        }
+      } catch {
+        setStories(mockStories);
+      }
+    };
+
+    fetchStories();
   }, []);
+
 
   const filteredStories = stories.filter((s) => {
     const matchesTag = selectedTag === "all" || s.category?.toLowerCase() === selectedTag.toLowerCase();

@@ -10,7 +10,7 @@ import {
   User,
   Sparkles,
 } from "lucide-react";
-import { mockMembers } from "../data/mockFamily";
+import { API_URL } from "../config";
 
 function FamilyTree() {
   const [members, setMembers] = useState([]);
@@ -20,8 +20,23 @@ function FamilyTree() {
   const [activeTooltip, setActiveTooltip] = useState(null);
 
   useEffect(() => {
-    setMembers(mockMembers);
+    const fetchTree = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/members`);
+        if (res.ok) {
+          const data = await res.json();
+          setMembers(data);
+        } else {
+          setMembers(mockMembers);
+        }
+      } catch {
+        setMembers(mockMembers);
+      }
+    };
+
+    fetchTree();
   }, []);
+
 
   const filteredMembers = members.filter((m) => {
     if (selectedGen !== "all" && String(m.generation) !== String(selectedGen))

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Users, Search, Filter, Sparkles } from "lucide-react";
 import MemberCard from "../components/MemberCard";
 import { SkeletonMemberCard } from "../components/SkeletonLoader";
-import { mockMembers } from "../data/mockFamily";
+import { API_URL } from "../config";
 
 function Members() {
   const [members, setMembers] = useState([]);
@@ -12,9 +12,25 @@ function Members() {
   const [selectedGen, setSelectedGen] = useState("all");
 
   useEffect(() => {
-    setMembers(mockMembers);
-    setLoading(false);
+    const fetchMembers = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/members`);
+        if (res.ok) {
+          const data = await res.json();
+          setMembers(data);
+        } else {
+          setMembers(mockMembers);
+        }
+      } catch {
+        setMembers(mockMembers);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMembers();
   }, []);
+
 
   const filteredMembers = members.filter((m) => {
     const matchesSearch =

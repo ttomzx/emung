@@ -9,19 +9,42 @@ import {
   CheckCircle2, 
   PartyPopper
 } from "lucide-react";
-import { mockEvents } from "../data/mockFamily";
+import { API_URL } from "../config";
+import { useAuth } from "../context/AuthContext";
 
 function Events() {
   const [events, setEvents] = useState([]);
   const [filterType, setFilterType] = useState("all");
+  const { user, token } = useAuth();
 
   useEffect(() => {
-    setEvents(mockEvents);
-  }, []);
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/events`);
+        if (res.ok) {
+          const data = await res.json();
+          // Check if current user email is in rsvps list
+          const formatted = data.map((e) => ({
+            ...e,
+            isAttending: user ? e.rsvps?.includes(user.email) : false,
+          }));
+          setEvents(formatted);
+        } else {
+          setEvents(mockEvents);
+        }
+      } catch {
+        setEvents(mockEvents);
+      }
+    };
 
-  const handleRSVP = (id) => {
+    fetchEvents();
+  }, [user]);
+
+  const handleRSVP = async (id) => {
+    const targetId = id;
     const updated = events.map((e) => {
-      if (e.id === id) {
+      const evtId = e._id || e.id;
+      if (String(evtId) === String(targetId)) {
         const currentCount = typeof e.attendees === "number" ? e.attendees : 1;
         const isAttending = e.isAttending;
         return {
@@ -35,7 +58,19 @@ function Events() {
 
     setEvents(updated);
     confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+
+    try {
+      if (token) {
+        await fetch(`${API_URL}/api/events/${targetId}/rsvp`, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+    } catch (err) {
+      console.warn("RSVP sync offline:", err.message);
+    }
   };
+
 
   const filteredEvents = events.filter(
     (e) => filterType === "all" || e.type?.toLowerCase() === filterType.toLowerCase()
@@ -105,7 +140,7 @@ function Events() {
               <div className="rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md p-6 text-center shrink-0 space-y-3">
                 <span className="block text-xs font-bold uppercase tracking-widest text-slate-300">Are you attending?</span>
                 <button
-                  onClick={() => handleRSVP(heroEvent.id)}
+                  onClick={() => handleRSVP(heroEvent._id || heroEvent.id)}
                   className={`w-full px-6 py-3.5 rounded-xl text-sm font-bold shadow-md transition flex items-center justify-center gap-2 ${
                     heroEvent.isAttending
                       ? "bg-emerald-600 text-white"
@@ -147,7 +182,7 @@ function Events() {
         <div className="space-y-4">
           {filteredEvents.map((evt) => (
             <motion.div
-              key={evt.id}
+              key={evt._id || evt.id}
               whileHover={{ x: 4 }}
               className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs hover:border-amber-300 transition flex flex-col sm:flex-row sm:items-center justify-between gap-6"
             >
@@ -190,7 +225,7 @@ function Events() {
 
               <div className="flex items-center gap-2 shrink-0">
                 <button
-                  onClick={() => handleRSVP(evt.id)}
+                  onClick={() => handleRSVP(evt._id || evt.id)}
                   className={`px-4 py-2.5 rounded-xl text-xs font-bold transition ${
                     evt.isAttending
                       ? "bg-emerald-100 text-emerald-900 border border-emerald-300"

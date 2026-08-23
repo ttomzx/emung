@@ -11,21 +11,31 @@ A modern, dynamic static web application built to preserve family history, tree 
 - **Role-Based Access Control**: Built-in Admin (`admin@emung.org` / `admin123`) and Member (`member@emung.org` / `member123`) authorization matrix.
 - **Static Storage**: Powered by local data (`src/data/mockFamily.js`) and `localStorage` persistence.
 
+## Project Structure
+- `frontend/` - Modern React & Vite web application
+- `backend/` - Node.js, Express & MongoDB API server
+
 ## Getting Started
 
 ### 1. Install Dependencies
 ```bash
-cd client
-npm install
+npm run install:all
 ```
 
-### 2. Run Development Server
+### 2. Run Development Servers
+Run both frontend and backend concurrently:
 ```bash
 npm run dev
+```
+
+Or run them individually:
+```bash
+npm run dev:frontend
+npm run dev:backend
 ```
 
 ### 3. Build for Production
 ```bash
 npm run build
 ```
-The output will be generated in `client/dist`, ready to deploy to GitHub Pages, Vercel, Netlify, or Cloudflare Pages!
+The output will be generated in `frontend/dist`, ready to deploy to GitHub Pages, Vercel, Netlify, or Cloudflare Pages!

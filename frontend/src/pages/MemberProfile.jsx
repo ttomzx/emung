@@ -9,7 +9,7 @@ import {
   GitFork,
   Sparkles,
 } from "lucide-react";
-import { mockMembers } from "../data/mockFamily";
+import { API_URL } from "../config";
 
 function MemberProfile() {
   const { id } = useParams();
@@ -18,12 +18,27 @@ function MemberProfile() {
   const [activeTab, setActiveTab] = useState("bio");
 
   useEffect(() => {
-    const found = mockMembers.find((m) => String(m._id) === String(id));
-    if (found) {
-      setMember(found);
-    }
-    setLoading(false);
+    const fetchMember = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/members/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setMember(data);
+        } else {
+          const found = mockMembers.find((m) => String(m._id) === String(id));
+          if (found) setMember(found);
+        }
+      } catch {
+        const found = mockMembers.find((m) => String(m._id) === String(id));
+        if (found) setMember(found);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMember();
   }, [id]);
+
 
   if (loading) {
     return (

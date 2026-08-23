@@ -8,27 +8,67 @@ import {
   X, 
   Maximize2
 } from "lucide-react";
-import { mockMemories } from "../data/mockFamily";
+import { API_URL } from "../config";
+import { useAuth } from "../context/AuthContext";
 
 function Memories() {
   const [memories, setMemories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedLightbox, setSelectedLightbox] = useState(null);
+  const { token } = useAuth();
 
   useEffect(() => {
-    setMemories(mockMemories);
+    const fetchMemories = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/memories`);
+        if (res.ok) {
+          const data = await res.json();
+          setMemories(data);
+        } else {
+          setMemories(mockMemories);
+        }
+      } catch {
+        setMemories(mockMemories);
+      }
+    };
+
+    fetchMemories();
   }, []);
 
-  const handleLike = (id, e) => {
+  const handleLike = async (id, e) => {
     e?.stopPropagation();
-    const updated = memories.map((m) => {
-      if (m.id === id) {
-        return { ...m, likes: (m.likes || 0) + 1 };
+
+    // Optimistic UI update
+    setMemories((prev) =>
+      prev.map((m) => {
+        const targetId = m._id || m.id;
+        if (String(targetId) === String(id)) {
+          return { ...m, likes: (m.likes || 0) + 1 };
+        }
+        return m;
+      })
+    );
+
+    if (selectedLightbox) {
+      const targetId = selectedLightbox._id || selectedLightbox.id;
+      if (String(targetId) === String(id)) {
+        setSelectedLightbox((prev) => (prev ? { ...prev, likes: (prev.likes || 0) + 1 } : null));
       }
-      return m;
-    });
-    setMemories(updated);
+    }
+
+    try {
+      if (token) {
+        const targetId = id;
+        await fetch(`${API_URL}/api/memories/${targetId}/like`, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+    } catch (err) {
+      console.warn("Like sync offline:", err.message);
+    }
   };
+
 
   const filteredMemories = memories.filter(
     (m) => activeCategory === "all" || m.category?.toLowerCase() === activeCategory.toLowerCase()
@@ -80,7 +120,7 @@ function Memories() {
 
             return (
               <motion.div
-                key={mem.id}
+                key={mem._id || mem.id}
                 whileHover={{ y: -6 }}
                 onClick={() => setSelectedLightbox(mem)}
                 className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xs hover:shadow-xl hover:border-amber-300 transition cursor-pointer flex flex-col justify-between"
@@ -130,7 +170,7 @@ function Memories() {
                   
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={(e) => handleLike(mem.id, e)}
+                      onClick={(e) => handleLike(mem._id || mem.id, e)}
                       className="flex items-center gap-1 font-bold text-rose-500 hover:scale-110 transition-transform shrink-0"
                     >
                       <Heart className="w-4 h-4 fill-rose-500" />
