@@ -12,6 +12,7 @@ const memberSchema = new mongoose.Schema(
     location: { type: String, default: "" },
     profession: { type: String, default: "" },
     interests: [{ type: String }],
+    profilePhoto: { type: String, default: "" },
     parent: { type: mongoose.Schema.Types.ObjectId, ref: "Member", default: null },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
     family: { type: mongoose.Schema.Types.ObjectId, ref: "Family" },

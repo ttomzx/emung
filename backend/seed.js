@@ -23,6 +23,7 @@ const rawMembers = [
     location: "Yairipok Kakmayai, Manipur",
     profession: "Scholar & Historian",
     interests: ["Manipuri Culture", "Gardening", "Storytelling"],
+    profilePhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
   },
   {
     code: "m2",
@@ -36,6 +37,7 @@ const rawMembers = [
     location: "Imphal West, Manipur",
     profession: "Master Weaver",
     interests: ["Textile Weaving", "Folk Music", "Cooking"],
+    profilePhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop",
   },
   {
     code: "m3",
@@ -49,6 +51,7 @@ const rawMembers = [
     location: "Imphal East, Manipur",
     profession: "Agronomist",
     interests: ["Horticulture", "Carpentry", "Chess"],
+    profilePhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop",
   },
   {
     code: "m4",
@@ -62,6 +65,7 @@ const rawMembers = [
     location: "Imphal East, Manipur",
     profession: "Teacher",
     interests: ["Literature", "Calligraphy", "Baking"],
+    profilePhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop",
   },
   {
     code: "m5",
@@ -75,6 +79,7 @@ const rawMembers = [
     location: "Guwahati / Imphal",
     profession: "Civil Engineer",
     interests: ["Photography", "Trekking", "Guitar"],
+    profilePhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop",
   },
   {
     code: "m6",
@@ -88,6 +93,7 @@ const rawMembers = [
     location: "Guwahati",
     profession: "Physician",
     interests: ["Medical Research", "Gardening", "Classical Dance"],
+    profilePhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop",
   },
   {
     code: "m7",
@@ -101,6 +107,7 @@ const rawMembers = [
     location: "Bengaluru",
     profession: "Software Engineer",
     interests: ["Web Dev", "Digital Art", "Robotics"],
+    profilePhoto: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop",
   },
   {
     code: "m8",
@@ -114,6 +121,7 @@ const rawMembers = [
     location: "Guwahati",
     profession: "Student & Athlete",
     interests: ["Badminton", "Digital Art", "Violin"],
+    profilePhoto: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop",
   },
 ];
 

@@ -30,6 +30,7 @@ const mockMembers = [
     location: "Yairipok Kakmayai, Manipur",
     profession: "Scholar & Historian",
     interests: ["Manipuri Culture", "Gardening", "Storytelling"],
+    profilePhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
   },
   {
     _id: "m2",
@@ -43,6 +44,7 @@ const mockMembers = [
     location: "Imphal West, Manipur",
     profession: "Master Weaver",
     interests: ["Textile Weaving", "Folk Music", "Cooking"],
+    profilePhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop",
   },
   {
     _id: "m3",
@@ -55,6 +57,7 @@ const mockMembers = [
     location: "Imphal East, Manipur",
     profession: "Agronomist",
     interests: ["Horticulture", "Carpentry", "Chess"],
+    profilePhoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop",
   },
   {
     _id: "m4",
@@ -67,6 +70,7 @@ const mockMembers = [
     location: "Imphal East, Manipur",
     profession: "Teacher",
     interests: ["Literature", "Calligraphy", "Baking"],
+    profilePhoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop",
   },
   {
     _id: "m5",
@@ -79,6 +83,7 @@ const mockMembers = [
     location: "Guwahati / Imphal",
     profession: "Civil Engineer",
     interests: ["Photography", "Trekking", "Guitar"],
+    profilePhoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop",
   },
   {
     _id: "m6",
@@ -91,6 +96,7 @@ const mockMembers = [
     location: "Guwahati",
     profession: "Physician",
     interests: ["Medical Research", "Gardening", "Classical Dance"],
+    profilePhoto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop",
   },
   {
     _id: "m7",
@@ -103,6 +109,7 @@ const mockMembers = [
     location: "Bengaluru",
     profession: "Software Engineer",
     interests: ["Web Dev", "Digital Art", "Robotics"],
+    profilePhoto: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop",
   },
   {
     _id: "m8",
@@ -115,6 +122,7 @@ const mockMembers = [
     location: "Guwahati",
     profession: "Student & Athlete",
     interests: ["Badminton", "Digital Art", "Violin"],
+    profilePhoto: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop",
   },
 ];
 
@@ -221,49 +229,40 @@ function MemberProfile() {
         </Link>
 
         <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-          <div className="h-48 sm:h-56 bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-amber-900 shadow-xs border border-white/50">
+          {/* Header Banner */}
+          <div className="h-44 sm:h-52 bg-gradient-to-r from-amber-600 via-amber-500 to-emerald-600 relative overflow-hidden">
+            <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold text-amber-900 shadow-xs border border-white/60">
               Generation {member.generation}
             </div>
           </div>
 
           <div className="px-6 sm:px-10 pb-10 relative">
-            <div className="-mt-16 sm:-mt-20 flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-6">
-              <div className="flex items-end gap-5">
-                <div
-                  className={`flex h-28 w-28 sm:h-36 sm:w-36 items-center justify-center rounded-3xl text-white font-bold text-4xl shadow-xl ring-8 ring-white overflow-hidden ${
-                    isFemale
-                      ? "bg-gradient-to-tr from-rose-500 to-amber-400"
-                      : "bg-gradient-to-tr from-teal-600 to-emerald-400"
-                  }`}
-                >
-                  {member.profilePhoto ? (
-                    <img src={member.profilePhoto} alt={member.name} className="h-full w-full object-cover" />
-                  ) : member.name ? (
-                    member.name.charAt(0)
-                  ) : (
-                    <User className="w-12 h-12" />
-                  )}
-                </div>
-
-                <div className="mb-2">
-                  <h1 className="font-serif text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                    {member.name}
-                  </h1>
-                  <span className="inline-block mt-1 text-xs font-bold text-amber-900 bg-amber-100 px-3 py-1 rounded-full border border-amber-200">
-                    {member.relation}
-                  </span>
-                </div>
+            {/* Avatar & Desktop Action Bar Row */}
+            <div className="-mt-16 sm:-mt-20 mb-4 flex items-end justify-between gap-4">
+              <div
+                className={`relative flex h-28 w-28 sm:h-36 sm:w-36 items-center justify-center rounded-3xl text-white font-bold text-4xl shadow-xl ring-8 ring-white overflow-hidden shrink-0 ${
+                  isFemale
+                    ? "bg-gradient-to-tr from-rose-500 to-amber-400"
+                    : "bg-gradient-to-tr from-teal-600 to-emerald-400"
+                }`}
+              >
+                {member.profilePhoto ? (
+                  <img src={member.profilePhoto} alt={member.name} className="h-full w-full object-cover" />
+                ) : member.name ? (
+                  member.name.charAt(0)
+                ) : (
+                  <User className="w-12 h-12" />
+                )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 mb-2">
+              {/* Desktop Action Buttons */}
+              <div className="hidden sm:flex items-center gap-2 mb-2">
                 {canEditMember(member) && (
                   <button
                     onClick={() => setIsEditModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-100 text-amber-900 hover:bg-amber-200 text-xs font-bold transition border border-amber-300"
+                    className="inline-flex items-center gap-1.5 px-4.5 py-2.5 rounded-xl bg-amber-100/90 text-amber-900 hover:bg-amber-200 text-xs font-bold transition border border-amber-300 shadow-2xs"
                   >
-                    <Edit className="w-3.5 h-3.5" />
+                    <Edit className="w-4 h-4 text-amber-700" />
                     <span>Edit Profile</span>
                   </button>
                 )}
@@ -271,12 +270,53 @@ function MemberProfile() {
                 {canDeleteMember() && (
                   <button
                     onClick={() => setIsDeleteModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-100 text-rose-900 hover:bg-rose-200 text-xs font-bold transition border border-rose-300"
+                    className="inline-flex items-center gap-1.5 px-4.5 py-2.5 rounded-xl bg-rose-100/90 text-rose-900 hover:bg-rose-200 text-xs font-bold transition border border-rose-300 shadow-2xs"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-4 h-4 text-rose-700" />
                     <span>Delete</span>
                   </button>
                 )}
+              </div>
+            </div>
+
+            {/* Name Title & Badges Block (Spacious & Clean) */}
+            <div className="mb-6 pt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h1 className="font-serif text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                    {member.name}
+                  </h1>
+                  <div className="flex items-center gap-2.5 mt-2">
+                    <span className="inline-block text-xs font-bold text-amber-900 bg-amber-100/90 px-3 py-1 rounded-full border border-amber-200">
+                      {member.relation}
+                    </span>
+                    <span className="text-xs font-semibold text-slate-500">
+                      Gen {member.generation} • {isFemale ? "Female" : "Male"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Mobile Action Buttons */}
+                <div className="flex sm:hidden items-center gap-2 mt-2">
+                  {canEditMember(member) && (
+                    <button
+                      onClick={() => setIsEditModalOpen(true)}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-100 text-amber-900 text-xs font-bold border border-amber-300"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                      <span>Edit Profile</span>
+                    </button>
+                  )}
+                  {canDeleteMember() && (
+                    <button
+                      onClick={() => setIsDeleteModalOpen(true)}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-100 text-rose-900 text-xs font-bold border border-rose-300"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 

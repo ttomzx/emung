@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, UserPlus, Save, Loader2, Sparkles } from "lucide-react";
+import { X, UserPlus, Save, Loader2, Sparkles, Image as ImageIcon } from "lucide-react";
 import { API_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
 
@@ -16,6 +16,7 @@ function MemberModal({ isOpen, onClose, memberToEdit, onSaved, existingMembers =
     location: "",
     profession: "",
     interests: "",
+    profilePhoto: "",
     parent: "",
     biography: "",
   });
@@ -35,6 +36,7 @@ function MemberModal({ isOpen, onClose, memberToEdit, onSaved, existingMembers =
         location: memberToEdit.location || "",
         profession: memberToEdit.profession || "",
         interests: Array.isArray(memberToEdit.interests) ? memberToEdit.interests.join(", ") : memberToEdit.interests || "",
+        profilePhoto: memberToEdit.profilePhoto || "",
         parent: memberToEdit.parent?._id || memberToEdit.parent || "",
         biography: memberToEdit.biography || "",
       });
@@ -49,6 +51,7 @@ function MemberModal({ isOpen, onClose, memberToEdit, onSaved, existingMembers =
         location: "",
         profession: "",
         interests: "",
+        profilePhoto: "",
         parent: "",
         biography: "",
       });
@@ -185,6 +188,33 @@ function MemberModal({ isOpen, onClose, memberToEdit, onSaved, existingMembers =
               </div>
             </div>
 
+            {/* Profile Photo URL Field */}
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1 flex items-center justify-between">
+                <span>Profile Photo URL (Optional)</span>
+                <span className="text-[10px] text-slate-400">Direct image link</span>
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="url"
+                  name="profilePhoto"
+                  value={formData.profilePhoto}
+                  onChange={handleChange}
+                  placeholder="https://images.unsplash.com/photo-..."
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-2.5 outline-none focus:border-amber-500 focus:bg-white text-xs"
+                />
+                {formData.profilePhoto ? (
+                  <div className="h-10 w-10 shrink-0 rounded-xl overflow-hidden border border-slate-200 shadow-xs">
+                    <img src={formData.profilePhoto} alt="Preview" className="h-full w-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="h-10 w-10 shrink-0 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                    <ImageIcon className="w-5 h-5" />
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">Generation</label>
@@ -216,7 +246,7 @@ function MemberModal({ isOpen, onClose, memberToEdit, onSaved, existingMembers =
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Parent (Linage Link)</label>
+                <label className="block font-semibold text-slate-700 mb-1">Parent (Lineage Link)</label>
                 <select
                   name="parent"
                   value={formData.parent}

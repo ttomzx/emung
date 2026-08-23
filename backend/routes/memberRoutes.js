@@ -33,7 +33,7 @@ router.get("/:id", async (req, res) => {
 // @desc    Create a new family member
 router.post("/", protect, async (req, res) => {
   try {
-    const { name, relation, generation, gender, dateOfBirth, dateOfDeath, biography, location, profession, interests, parent } = req.body;
+    const { name, relation, generation, gender, dateOfBirth, dateOfDeath, biography, location, profession, interests, profilePhoto, parent } = req.body;
 
     const member = new Member({
       name,
@@ -46,6 +46,7 @@ router.post("/", protect, async (req, res) => {
       location,
       profession,
       interests: Array.isArray(interests) ? interests : (interests ? interests.split(",").map(i => i.trim()) : []),
+      profilePhoto: profilePhoto || "",
       parent: parent || null,
       user: req.user._id,
       family: req.user.family?._id,
@@ -70,7 +71,7 @@ router.put("/:id", protect, async (req, res) => {
 
     const fields = [
       "name", "relation", "generation", "gender", "dateOfBirth",
-      "dateOfDeath", "biography", "location", "profession", "interests", "parent"
+      "dateOfDeath", "biography", "location", "profession", "interests", "profilePhoto", "parent"
     ];
 
     fields.forEach((field) => {
