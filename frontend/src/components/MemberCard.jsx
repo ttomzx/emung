@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, ArrowRight, Calendar, MapPin } from "lucide-react";
+import { User, ArrowRight, Calendar, MapPin, Edit, Trash2 } from "lucide-react";
 
-function MemberCard({ member }) {
+function MemberCard({ member, onEdit, onDelete, canEdit, canDelete }) {
   const isFemale = member.gender === "female";
+  const memberId = member._id || member.id;
 
   return (
     <motion.div
@@ -82,12 +83,34 @@ function MemberCard({ member }) {
       {/* Action Footer */}
       <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
         <Link
-          to={`/members/${member._id}`}
+          to={`/members/${memberId}`}
           className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 hover:text-amber-600 transition-colors"
         >
-          <span>View Full Profile</span>
+          <span>View Profile</span>
           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform duration-300" />
         </Link>
+
+        <div className="flex items-center gap-1">
+          {canEdit && onEdit && (
+            <button
+              onClick={() => onEdit(member)}
+              title="Edit Member"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-amber-700 hover:bg-amber-50 transition"
+            >
+              <Edit className="w-4 h-4" />
+            </button>
+          )}
+
+          {canDelete && onDelete && (
+            <button
+              onClick={() => onDelete(member)}
+              title="Delete Member"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
     </motion.div>
   );

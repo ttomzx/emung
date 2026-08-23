@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Calendar,
@@ -8,14 +8,135 @@ import {
   User,
   GitFork,
   Sparkles,
+  Edit,
+  Trash2,
 } from "lucide-react";
+import MemberModal from "../components/MemberModal";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import Toast from "../components/Toast";
 import { API_URL } from "../config";
+import { useAuth } from "../context/AuthContext";
+
+const mockMembers = [
+  {
+    _id: "m1",
+    name: "Sorokhaibam Babu Singh",
+    relation: "Grandfather",
+    generation: 1,
+    gender: "male",
+    dateOfBirth: "1937-03-15",
+    dateOfDeath: "2023-10-23",
+    biography: "Founder of the family estate in Kakmayai. Known for his wisdom, devotion to traditional craftsmanship, and community leadership.",
+    location: "Yairipok Kakmayai, Manipur",
+    profession: "Scholar & Historian",
+    interests: ["Manipuri Culture", "Gardening", "Storytelling"],
+  },
+  {
+    _id: "m2",
+    name: "Sorokhaibam Ahanbi Devi",
+    relation: "Grandmother",
+    generation: 1,
+    gender: "female",
+    dateOfBirth: "1939-07-09",
+    dateOfDeath: "2003-04-12",
+    biography: "Keeper of family traditions, master weaver of sacred Phanek textiles, and cherished storyteller for 4 generations.",
+    location: "Imphal West, Manipur",
+    profession: "Master Weaver",
+    interests: ["Textile Weaving", "Folk Music", "Cooking"],
+  },
+  {
+    _id: "m3",
+    name: "Sorokhaibam Komol Meitei",
+    relation: "Father",
+    generation: 2,
+    gender: "male",
+    dateOfBirth: "1972-01-10",
+    biography: "Pioneered sustainable agriculture in the valley. Built the family homestead and served as community elder for over 30 years.",
+    location: "Imphal East, Manipur",
+    profession: "Agronomist",
+    interests: ["Horticulture", "Carpentry", "Chess"],
+  },
+  {
+    _id: "m4",
+    name: "Sorokhaibam Landhoni Leima",
+    relation: "Mother",
+    generation: 2,
+    gender: "female",
+    dateOfBirth: "1974-09-24",
+    biography: "Passionate educator who established the first community literacy center for women in the region.",
+    location: "Imphal East, Manipur",
+    profession: "Teacher",
+    interests: ["Literature", "Calligraphy", "Baking"],
+  },
+  {
+    _id: "m5",
+    name: "Sorokhaibam Sanakhomba Meitei",
+    relation: "Sibling",
+    generation: 3,
+    gender: "male",
+    dateOfBirth: "1978-05-18",
+    biography: "Civil engineer dedicated to eco-friendly architecture. Enthusiastic nature photographer and family archivist.",
+    location: "Guwahati / Imphal",
+    profession: "Civil Engineer",
+    interests: ["Photography", "Trekking", "Guitar"],
+  },
+  {
+    _id: "m6",
+    name: "Sorokhaibam Uttam Meitei",
+    relation: "Sibling",
+    generation: 3,
+    gender: "male",
+    dateOfBirth: "1982-12-05",
+    biography: "Renowned doctor and advocate for rural healthcare outreach. Loves hosting family gatherings.",
+    location: "Guwahati",
+    profession: "Physician",
+    interests: ["Medical Research", "Gardening", "Classical Dance"],
+  },
+  {
+    _id: "m7",
+    name: "Sorokhaibam Tolentomba Meitei",
+    relation: "Son / You",
+    generation: 4,
+    gender: "male",
+    dateOfBirth: "2004-08-22",
+    biography: "Software developer and UI designer creating modern digital archives to preserve cultural heritage.",
+    location: "Bengaluru",
+    profession: "Software Engineer",
+    interests: ["Web Dev", "Digital Art", "Robotics"],
+  },
+  {
+    _id: "m8",
+    name: "Thoibi Chanu",
+    relation: "Daughter / Sister",
+    generation: 4,
+    gender: "female",
+    dateOfBirth: "2008-11-03",
+    biography: "Aspiring badminton champion and high school valedictorian. Loves digital illustration and music.",
+    location: "Guwahati",
+    profession: "Student & Athlete",
+    interests: ["Badminton", "Digital Art", "Violin"],
+  },
+];
 
 function MemberProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [member, setMember] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("bio");
+
+  // Modals & Actions
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const [toast, setToast] = useState({ message: "", type: "success" });
+  const { token, canEditMember, canDeleteMember } = useAuth();
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast({ message: "", type: "success" }), 4000);
+  };
 
   useEffect(() => {
     const fetchMember = async () => {
@@ -39,6 +160,30 @@ function MemberProfile() {
     fetchMember();
   }, [id]);
 
+  const handleSaved = (updatedMember) => {
+    setMember(updatedMember);
+    showToast(`Updated ${updatedMember.name}'s profile successfully!`, "success");
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!member) return;
+    setDeleteLoading(true);
+
+    try {
+      if (token && !token.startsWith("demo-")) {
+        await fetch(`${API_URL}/api/members/${member._id || member.id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      showToast(`Removed ${member.name} from directory`, "info");
+      setTimeout(() => navigate("/members"), 1000);
+    } catch {
+      showToast("Failed to delete member profile", "error");
+      setDeleteLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -109,6 +254,29 @@ function MemberProfile() {
                     {member.relation}
                   </span>
                 </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 mb-2">
+                {canEditMember(member) && (
+                  <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-100 text-amber-900 hover:bg-amber-200 text-xs font-bold transition border border-amber-300"
+                  >
+                    <Edit className="w-3.5 h-3.5" />
+                    <span>Edit Profile</span>
+                  </button>
+                )}
+
+                {canDeleteMember() && (
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-100 text-rose-900 hover:bg-rose-200 text-xs font-bold transition border border-rose-300"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -237,6 +405,27 @@ function MemberProfile() {
           </div>
         </div>
       </section>
+
+      {/* Edit Member Modal */}
+      <MemberModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        memberToEdit={member}
+        onSaved={handleSaved}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        loading={deleteLoading}
+        title="Delete Member Profile"
+        message={`Are you sure you want to delete ${member?.name}'s profile?`}
+      />
+
+      {/* Toast Notification */}
+      <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: "", type: "success" })} />
     </main>
   );
 }
